@@ -346,3 +346,14 @@ server int   url_ndm_casingAmt             = 1;
 server int   url_ndm_powderMat             = 2;
 server int   url_ndm_powderAmt             = 1;
 server float url_ndm_speed                 = 1.0;
+
+
+// BANGERS AND MASH
+server int   url_8mm_enabled               = 3;
+server int   url_8mm_projMat               = 3;
+server int   url_8mm_projAmt               = 15;
+server int   url_8mm_casingMat             = 3;
+server int   url_8mm_casingAmt             = 5;
+server int   url_8mm_powderMat             = 0;
+server int   url_8mm_powderAmt             = 0;
+server float url_8mm_speed                 = 1.0;

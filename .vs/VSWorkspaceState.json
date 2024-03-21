@@ -1,7 +1,11 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\zscript",
+    "\\zscript\\gunsmithpouch",
+    "\\zscript\\universalreloader",
+    "\\zscript\\universalreloader\\items"
   ],
-  "SelectedNode": "\\C:\\Users\\gooey\\Source\\Repos\\Universal-Reloader",
+  "SelectedNode": "\\zscript\\universalreloader\\items\\universalReloader.zsc",
   "PreviewInSolutionExplorer": false
 }

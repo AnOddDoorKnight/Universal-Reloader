@@ -49,3 +49,7 @@ PICKUP_PILE_RAWPOWDER     = "Picked up a pile of gunpowder.";
 PICKUP_PILE_RAWSTEEL      = "Picked up a ball of steel.";
 PICKUP_UNIVERSAL_RELOADER = "Picked up a universal reloading device.";
 PICKUP_GUNSMITH_POUCH     = "Picked up a gunsmith's pouch, for all your gunpowder!";
+
+// Extra messages
+BANGERS_TAG_ELECTROMAGNETIC = "8x35mm Electromagnetic Cartridge";
+PEPPER_TAG_NDM = "9mm Nail Driver Round";
