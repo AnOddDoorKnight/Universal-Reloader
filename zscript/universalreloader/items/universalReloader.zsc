@@ -16,9 +16,9 @@ class HDUniversalReloader : HDWeapon
 	override string, double GetPickupSprite() { return "URLDA0", 1.0; }
 	override string GetHelpText()
 	{
-		return WEPHELP_FIRE.."/"..WEPHELP_ALTFIRE.."  Cycle ammo\n"
-		..WEPHELP_RELOAD.."  Drop in assemble mode\n"
-		..WEPHELP_UNLOAD.."  Drop in disassemble mode";
+		return WEPHELP_RELOAD.."/"..WEPHELP_UNLOAD.."  Cycle ammo\n"
+		..WEPHELP_FIRE.."  Drop in assemble mode\n"
+		..WEPHELP_ALTFIRE.."  Drop in disassemble mode";
 	}
 	override double GunMass() { return 0; }
 	override double WeaponBulk() { return 50 * Amount; }
@@ -102,8 +102,13 @@ class HDUniversalReloader : HDWeapon
 		Active = false;
 		IsBeingPickedUp = false;
 	}
+	
+	override void detachfromowner(){
+		translation=owner.translation;
+		super.detachfromowner();
+	}
 
-	protected play void GetCraftableRecipes(out Array<int> arr)
+	protected play void GetCraftableRecipes(bool keepInvalidRecipes, out Array<int> arr)
 	{
 		arr.clear();
 
@@ -113,7 +118,7 @@ class HDUniversalReloader : HDWeapon
 
 			// if (hd_debug) console.printf(r.toString());
 
-			let canCraft = r && (canAssemble(r) || canDisassemble(r));
+			let canCraft = r && (keepInvalidRecipes || canAssemble(r) || canDisassemble(r));
 			if (hd_debug) console.printf("Can craft "..r.AmmoClass.GetClassName().."? "..canCraft);
 
 			if (canCraft) arr.push(i);
@@ -344,9 +349,16 @@ class HDUniversalReloader : HDWeapon
 	Default
 	{
 		MaxStepHeight 4;
-		+WEAPON.WIMPY_WEAPON
-		+INVENTORY.INVBAR
-		+HDWEAPON.FITSINBACKPACK
+		+weapon.wimpy_weapon
+		+inventory.invbar
+		+hdweapon.droptranslation
+		+hdweapon.fitsinbackpack
+		hdweapon.barrelsize 0,0,0;
+		weapon.selectionorder 1014;
+		//+WEAPON.WIMPY_WEAPON
+		//+INVENTORY.INVBAR
+		//+HDWEAPON.FITSINBACKPACK
+		//+HDWEAPON.DONTFISTONDROP
 		Inventory.PickupSound "misc/w_pkup";
 		Inventory.PickupMessage "$PICKUP_UNIVERSAL_RELOADER";
 		Scale 0.6;
@@ -370,19 +382,13 @@ class HDUniversalReloader : HDWeapon
 			TNT1 A 0 A_Lower(999);
 			Wait;
 		Ready:
-			TNT1 A 0 { invoker.GetCraftableRecipes(invoker.CraftableRecipes); }
-			TNT1 A 1 A_WeaponReady(WRF_ALLOWRELOAD | WRF_ALLOWUSER3 | WRF_ALLOWUSER4);
+			TNT1 A 0 { invoker.GetCraftableRecipes(CVar.GetCVar('url_deploy_on_empty_inventory', player).GetBool(), invoker.CraftableRecipes); }
+			TNT1 A 1 A_WeaponReady(WRF_ALLOWRELOAD | WRF_ALLOWUSER1 | WRF_ALLOWUSER2 | WRF_ALLOWUSER3 | WRF_ALLOWUSER4);
 			Goto ReadyEnd;
 		Fire:
-			TNT1 A 5 A_CheckCycle(1);
-			Goto Ready;
-		AltFire:
-			TNT1 A 5 A_CheckCycle(-1);
-			Goto Ready;
-		Reload:
 			TNT1 A 5
 			{
-				if (invoker.canAssemble(invoker.GetSelectedRecipe()))
+				if (CVar.GetCVar('url_deploy_on_empty_inventory', player).GetBool() || invoker.canAssemble(invoker.GetSelectedRecipe()))
 				{
 					invoker.ChargeUp = 0;
 					invoker.FactoryAction = FAction_Assemble;
@@ -390,16 +396,22 @@ class HDUniversalReloader : HDWeapon
 				}
 			}
 			Goto Ready;
-		Unload:
+		AltFire:
 			TNT1 A 5
 			{
-				if (invoker.canDisassemble(invoker.GetSelectedRecipe()))
+				if (CVar.GetCVar('url_deploy_on_empty_inventory', player).GetBool() || invoker.canDisassemble(invoker.GetSelectedRecipe()))
 				{
 					invoker.ChargeUp = 0;
 					invoker.FactoryAction = FAction_Disassemble;
 					DropInventory(invoker);
 				}
 			}
+			Goto Ready;
+		Reload:
+			TNT1 A 5 A_CheckCycle(1);
+			Goto Ready;
+		Unload:
+			TNT1 A 5 A_CheckCycle(-1);
 			Goto Ready;
 		LookForStuff:
 			#### A 1
@@ -665,3 +677,4 @@ class HDUniversalReloader : HDWeapon
 			Stop;
 	}
 }
+

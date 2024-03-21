@@ -12,6 +12,8 @@ server bool rawPlastic_allowBackpacks      = true;
 server bool rawPowder_allowBackpacks       = true;
 server bool rawSteel_allowBackpacks        = true;
 
+user bool url_deploy_on_empty_inventory    = false;
+
 // VANILLA HDEST
 server int   url_9mm_enabled               = 3;
 server int   url_9mm_projMat               = 1;
